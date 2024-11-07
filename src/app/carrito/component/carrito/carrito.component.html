@@ -1,0 +1,102 @@
+<app-sidebar></app-sidebar>
+<p-toast></p-toast>
+
+<div class="card">
+    <div class="flex justify-content-between mb-3">
+        <h3>Listar Carritos</h3>
+        <p-button (click)="showDialogCreate()" icon="pi pi-plus" label="Crear Carrito"></p-button>
+    </div>
+
+    <div class="flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl">
+            <div class="overflow-x-auto">
+                <div *ngIf="cargando" class="flex justify-center items-center my-4">
+                    <p-progressSpinner styleClass="w-8 h-8"></p-progressSpinner>
+                    <span class="ml-2">Cargando datos...</span>
+                </div>
+
+                <p-table [value]="carritos"
+                        [loading]="cargando"
+                        styleClass="p-datatable-sm"
+                        [tableStyle]="{'min-width': '100%'}">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Artículo</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-carrito>
+                        <tr>
+                            <td>{{carrito.id}}</td>
+                            <td>{{carrito.articulo}}</td>
+                            <td>{{carrito.precio}}</td>
+                            <td>{{carrito.cantidad}}</td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <p-button (click)="showDialogEdit(carrito.id)" 
+                                             icon="pi pi-pencil" 
+                                             severity="warning">
+                                    </p-button>
+                                    <p-button (click)="deleteCarrito(carrito.id)" 
+                                             icon="pi pi-trash" 
+                                             severity="danger"
+                                             [loading]="isDeleteInProgress">
+                                    </p-button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="visible" 
+          [header]="titulo" 
+          [modal]="true" 
+          [style]="{width: '400px'}"
+          [draggable]="false" 
+          [resizable]="false">
+    <div class="flex flex-column gap-3">
+        <div class="field">
+            <label for="articulo">Artículo</label>
+            <input type="text" 
+                   pInputText 
+                   [(ngModel)]="carrito.articulo" 
+                   id="articulo" 
+                   class="w-full">
+        </div>
+        
+        <div class="field">
+            <label for="precio">Precio</label>
+            <input type="number" 
+                   pInputText 
+                   [(ngModel)]="carrito.precio" 
+                   id="precio" 
+                   class="w-full">
+        </div>
+
+        <div class="field">
+            <label for="cantidad">Cantidad</label>
+            <input type="number" 
+                   pInputText 
+                   [(ngModel)]="carrito.cantidad" 
+                   id="cantidad" 
+                   class="w-full">
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-2">
+            <p-button (click)="visible=false" 
+                     label="Cancelar" 
+                     styleClass="p-button-text">
+            </p-button>
+            <p-button (click)="op === 0 ? addCarrito() : updateCarrito()" [label]="opc"></p-button>
+        </div>
+    </ng-template>
+</p-dialog>
